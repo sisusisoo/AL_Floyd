@@ -96,7 +96,7 @@ int dfs1(int graph[][MAX_VERTICES]) {
 
 
 //------------------------------------------------------------------------
-//그래프 출력
+//그래프 출력//INF 번역본 
 void printGraph(int graph[][MAX_VERTICES]) {
     for (int i = 0; i < MAX_VERTICES; i++) {
         for (int j = 0; j < MAX_VERTICES; j++) {
@@ -127,16 +127,17 @@ void randomTree(int Graph[][MAX_VERTICES]) {
     //[n][n]부분(x=y)은 0, 다른 부분은 INF로 초기화 //-------5월7일 수정 -------------------
     for (int i = 0; i < MAX_VERTICES; i++) {
         for (int j = 0; j < MAX_VERTICES; j++) {
-            if (i = !j) {
+            if (i != j) {
                 Graph[i][j] = INF;
             }
             else {
                 Graph[i][j] = 0;
             }
-           
+
         }
     }
     srand(time(NULL));//랜덤함수 초기화 
+
 
 
 
@@ -151,7 +152,7 @@ void randomTree(int Graph[][MAX_VERTICES]) {
         while (edge1 < EdgeN) {
             x = rand() % MAX_VERTICES;
             y = rand() % MAX_VERTICES;
-            if (x >= 0 && y >= 0 && Graph[x][y] == 0 && Graph[y][x] == 0 && x != y) {
+            if (x >= 0 && y >= 0 && Graph[x][y] == INF && Graph[y][x] == INF && x != y) {//이어지지않은곳 INF화 5월7일 수정-----------
                 int temp = (rand() % 20) + 1;// 1~20 까지의 가중치
                 Graph[x][y] = Graph[y][x] = temp;
                 edge1++;
@@ -192,13 +193,7 @@ void floydWarshall(int graph[MAX_VERTICES][MAX_VERTICES]) {
             d[i][j] = graph[i][j];
         }
     }
-    printf("debuging \n");                          //--------------------------------debug
-    for (int i = 0; i < MAX_VERTICES; i++) {
-        for (int j = 0; j < MAX_VERTICES; j++) {
-            printf("%3d ", d[i][j]);
-        }
-        printf("\n");
-    }
+
 
     // p : 거쳐갈 정점
     for (int p = 0; p < MAX_VERTICES; p++) {
@@ -206,7 +201,7 @@ void floydWarshall(int graph[MAX_VERTICES][MAX_VERTICES]) {
             for (int j = 0; j < MAX_VERTICES; j++) {
                 if (d[i][p] + d[p][j] < d[i][j]) {
                     d[i][j] = d[i][p] + d[p][j];
-                    printf("debug %d (%d,%d) \n",d[i][j],i,j);  //-------------------------------------debug
+                    // printf("debug %d (%d,%d) \n",d[i][j],i,j);  //-------------------------------------debug
                 }
             }
         }
@@ -217,7 +212,7 @@ void floydWarshall(int graph[MAX_VERTICES][MAX_VERTICES]) {
 
     for (int i = 0; i < MAX_VERTICES; i++) {
         for (int j = 0; j < MAX_VERTICES; j++) {
-            printf("%3d ", d[i][j]);
+            printf("%4d ", d[i][j]);
         }
         printf("\n");
     }
@@ -255,7 +250,7 @@ void dijkstra(int graph[MAX_VERTICES][MAX_VERTICES], int src) {
 
         // 현재 정점을 통해 갈 수 있는 모든 경로를 검사하여 최단 거리를 업데이트
         for (int v = 0; v < MAX_VERTICES; v++) { //여기서 얼마든지 바뀔수 있는데 교재에서는 왜 확정이라는 말을 사용하는지 궁금.... 
-            if (!visited[v] && graph[minIndex][v]!=INF && dist[minIndex] != INF &&                                   //이부분 떄문에 이어지지 않은곳을 0 으로 표현 가능 ------------------ 5월7일 수정 
+            if (!visited[v] && graph[minIndex][v] != INF && dist[minIndex] != INF &&                                   //이부분 떄문에 이어지지 않은곳을 0 으로 표현 가능 ------------------ 5월7일 수정 
                 dist[minIndex] + graph[minIndex][v] < dist[v]) {                                                //graph[minIndex][v] != INF 이면 작동으로 하면 가능 
                 dist[v] = dist[minIndex] + graph[minIndex][v];
             }
@@ -268,7 +263,9 @@ void dijkstra(int graph[MAX_VERTICES][MAX_VERTICES], int src) {
 
 int main() {
     int graph[MAX_VERTICES][MAX_VERTICES];
+
     randomTree(graph);
+
 
     floydWarshall(graph);
     //dijkstra(graph, 0);  // 0번 정점을 시작점으로 해서 최단 경로 찾기
